@@ -1,0 +1,96 @@
+/* Conteneur principal centré */
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 48px);
+  background-color: #ffffff;
+}
+
+/* Carte d'inscription */
+.login-card {
+  width: 100%;
+  max-width: 400px;
+  padding: 40px 20px;
+  text-align: center;
+
+  h1 {
+    font-size: 32px;
+    font-weight: 600;
+    color: #1d1d1f;
+    margin-bottom: 8px;
+    letter-spacing: -0.01em;
+  }
+
+  .subtitle {
+    font-size: 17px;
+    color: #86868b;
+    margin-bottom: 30px;
+    line-height: 1.4;
+  }
+}
+
+/* Formulaire et Champs de saisie */
+.login-form {
+  .input-group {
+    margin-bottom: 15px;
+
+    input {
+      width: 100%;
+      height: 52px;
+      padding: 0 16px;
+      border: 1px solid #d2d2d7;
+      border-radius: 12px;
+      font-size: 17px;
+      box-sizing: border-box;
+      outline: none;
+      background-color: #ffffff;
+      transition: border-color 0.2s, box-shadow 0.2s;
+
+      &:focus {
+        border-color: #0071e3;
+        box-shadow: 0 0 0 4px rgba(0, 113, 227, 0.1);
+      }
+    }
+  }
+
+  /* Bouton Créer mon compte */
+  .login-btn {
+    width: 100%;
+    height: 52px;
+    background-color: #0071e3;
+    color: #ffffff;
+    border: none;
+    border-radius: 12px;
+    font-size: 17px;
+    font-weight: 500;
+    margin-top: 25px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+
+    &:hover {
+      background-color: #0077ed;
+    }
+
+    &:active {
+      transform: scale(0.99);
+    }
+  }
+}
+
+/* Footer avec le lien de redirection */
+.login-footer {
+  margin-top: 30px;
+  font-size: 14px;
+  color: #86868b;
+
+  a {
+    color: #0066cc;
+    text-decoration: none;
+    font-weight: 400;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
