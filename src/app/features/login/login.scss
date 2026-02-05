@@ -48,6 +48,13 @@
     }
   }
 
+  .error-message {
+    color: #ff3b30;
+    font-size: 14px;
+    margin-top: 10px;
+    text-align: center;
+  }
+
   .login-btn {
     width: 100%;
     height: 50px;
@@ -63,6 +70,11 @@
 
     &:hover {
       background-color: #0077ed;
+    }
+
+    &:disabled {
+      background-color: #86868b;
+      cursor: not-allowed;
     }
   }
 }

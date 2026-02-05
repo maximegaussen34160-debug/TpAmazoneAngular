@@ -3,16 +3,22 @@
     <h1>Identifiez-vous.</h1>
     <p class="subtitle">Gérez vos commandes et vos préférences iShop.</p>
 
-    <form class="login-form">
+    <form class="login-form" (ngSubmit)="onSubmit()">
       <div class="input-group">
-        <input type="email" placeholder="Adresse e-mail" required>
+        <input type="email" placeholder="Adresse e-mail" [(ngModel)]="email" name="email" required>
       </div>
       
       <div class="input-group">
-        <input type="password" placeholder="Mot de passe" required>
+        <input type="password" placeholder="Mot de passe" [(ngModel)]="password" name="password" required>
       </div>
 
-      <button type="submit" class="login-btn" routerLink="/catalog">Se connecter</button>
+      @if (errorMessage) {
+        <div class="error-message">{{ errorMessage }}</div>
+      }
+
+      <button type="submit" class="login-btn" [disabled]="isLoading">
+        {{ isLoading ? 'Connexion...' : 'Se connecter' }}
+      </button>
 
     </form>
 

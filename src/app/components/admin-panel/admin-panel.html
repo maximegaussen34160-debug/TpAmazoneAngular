@@ -1,0 +1,141 @@
+<!-- Bouton flottant en bas à gauche -->
+<button class="admin-fab" (click)="togglePanel()" [class.active]="isOpen">
+  <i class="fa-solid fa-users-cog"></i>
+</button>
+
+<!-- Overlay -->
+@if (isOpen) {
+  <div class="overlay" (click)="closePanel()"></div>
+}
+
+<!-- Panel -->
+<div class="admin-panel" [class.open]="isOpen">
+  <div class="panel-header">
+    <h2>
+      <i class="fa-solid fa-shield-halved"></i>
+      Gestion des rôles
+    </h2>
+    <button class="close-btn" (click)="closePanel()">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+  </div>
+
+  <!-- Notification -->
+  @if (notification) {
+    <div class="notification" [class.success]="notification.type === 'success'" [class.error]="notification.type === 'error'">
+      @if (notification.type === 'success') {
+        <i class="fa-solid fa-check-circle"></i>
+      } @else {
+        <i class="fa-solid fa-times-circle"></i>
+      }
+      <span>{{ notification.message }}</span>
+    </div>
+  }
+
+  <div class="panel-content">
+    <!-- Modal de validation du code -->
+    @if (pendingChange) {
+      <div class="code-validation">
+        <div class="code-header">
+          <i class="fa-solid fa-lock"></i>
+          <h3>Validation requise</h3>
+        </div>
+        <p class="code-info">
+          Un code a été envoyé dans la <strong>console du serveur</strong>.<br>
+          Entrez-le ci-dessous pour confirmer le changement de rôle.
+        </p>
+        <div class="code-details">
+          <span class="label">Utilisateur :</span>
+          <span class="value">{{ pendingChange.user.email }}</span>
+        </div>
+        <div class="code-details">
+          <span class="label">Nouveau rôle :</span>
+          <span class="value role-badge" [class.admin]="pendingChange.newRole === 'ADMIN'">
+            {{ pendingChange.newRole === 'ADMIN' ? 'Administrateur' : 'Utilisateur' }}
+          </span>
+        </div>
+        <div class="code-input-group">
+          <input 
+            type="text" 
+            [(ngModel)]="codeInput" 
+            placeholder="Entrez le code"
+            class="code-input"
+            (keyup.enter)="validateCode()"
+            maxlength="6"
+            autocomplete="off">
+          <button 
+            class="btn-validate" 
+            (click)="validateCode()" 
+            [disabled]="!codeInput || isValidating">
+            @if (isValidating) {
+              <i class="fa-solid fa-spinner fa-spin"></i>
+            } @else {
+              <i class="fa-solid fa-check"></i>
+            }
+            Valider
+          </button>
+        </div>
+        <button class="btn-cancel" (click)="cancelRoleChange()">
+          <i class="fa-solid fa-arrow-left"></i>
+          Annuler
+        </button>
+      </div>
+    } @else if (isLoading) {
+      <div class="loading">
+        <i class="fa-solid fa-spinner fa-spin"></i>
+        <span>Chargement...</span>
+      </div>
+    } @else if (users.length === 0) {
+      <div class="empty">
+        <i class="fa-solid fa-user-slash"></i>
+        <p>Connectez-vous pour gérer les rôles</p>
+      </div>
+    } @else {
+      <div class="users-list">
+        @for (user of users; track user.id) {
+          <div class="user-card" [class.is-admin]="user.role === 'ADMIN'">
+            <div class="user-info">
+              <div class="user-avatar" [class.admin]="user.role === 'ADMIN'">
+                @if (user.role === 'ADMIN') {
+                  <i class="fa-solid fa-crown"></i>
+                } @else {
+                  <i class="fa-solid fa-user"></i>
+                }
+              </div>
+              <div class="user-details">
+                <span class="user-name">{{ user.name }}</span>
+                <span class="user-email">{{ user.email }}</span>
+                <span class="current-role" [class.admin]="user.role === 'ADMIN'">
+                  {{ user.role === 'ADMIN' ? '👑 Admin' : '👤 User' }}
+                </span>
+              </div>
+            </div>
+            <div class="role-actions">
+              <button 
+                class="role-btn" 
+                [class.active]="user.role === 'USER'"
+                (click)="requestRoleChange(user, 'USER')"
+                [disabled]="user.role === 'USER'">
+                User
+              </button>
+              <button 
+                class="role-btn admin-btn" 
+                [class.active]="user.role === 'ADMIN'"
+                (click)="requestRoleChange(user, 'ADMIN')"
+                [disabled]="user.role === 'ADMIN'">
+                Admin
+              </button>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </div>
+
+  <div class="panel-footer">
+    <p class="info">
+      <i class="fa-solid fa-info-circle"></i>
+      Les admins peuvent ajouter des produits
+    </p>
+  </div>
+</div>

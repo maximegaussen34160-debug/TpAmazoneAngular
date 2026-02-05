@@ -1,9 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { RouterLink} from '@angular/router';
-import { HashService } from '../../hash';
-import { HttpClient } from '@angular/common/http';
+import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
 	selector: 'app-register',
@@ -15,38 +14,41 @@ export class Register {
 	passwordInput: string = '';
 	mailInput: string = '';
 	nameInput: string = '';
+	errorMessage: string = '';
+	successMessage: string = '';
+	isLoading: boolean = false;
 
-	// Variables pour stocker les résultats
-
-	finalHash: string = '';
-
-	constructor(private hashService: HashService, private http: HttpClient) { }
-
+	constructor(
+		private authService: AuthService,
+		private router: Router
+	) { }
 
 	register() {
-		this.http.post('http://localhost:8080/user/sel', { name : this.nameInput, mail: this.mailInput })
-			.subscribe((res: any) => {
-				console.log(res.salt)
-				if (res.salt) {
+		if (!this.nameInput || !this.mailInput || !this.passwordInput) {
+			this.errorMessage = 'Veuillez remplir tous les champs.';
+			return;
+		}
 
-					this.finalHash = this.hashService.hashPassword(this.passwordInput, res.salt);
-					console.log(this.nameInput);
-					console.log(this.mailInput);
-					console.log(this.finalHash);
-					this.http.post('http://localhost:8080/register',
-						{
-							name: this.nameInput,
-							identifiant: this.mailInput,
-							pswd: this.finalHash
-						}
-					)
-						.subscribe(res => {
-							console.log(res);
-						}
-						);
-				}
+		this.isLoading = true;
+		this.errorMessage = '';
+		this.successMessage = '';
+
+		this.authService.register({
+			name: this.nameInput,
+			email: this.mailInput,
+			password: this.passwordInput
+		}).subscribe({
+			next: (res) => {
+				this.isLoading = false;
+				this.successMessage = 'Compte créé avec succès ! Redirection...';
+				setTimeout(() => {
+					this.router.navigate(['/login']);
+				}, 1500);
+			},
+			error: (err) => {
+				this.isLoading = false;
+				this.errorMessage = err.error?.message || 'Erreur lors de l\'inscription.';
 			}
-			);
-
+		});
 	}
 }

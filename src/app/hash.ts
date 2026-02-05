@@ -6,15 +6,9 @@ import * as CryptoJS from 'crypto-js';
 })
 export class HashService {
 
-  // Générer un sel aléatoire
-  generateSalt(length: number = 16): string {
-    return CryptoJS.lib.WordArray.random(length).toString();
-  }
-
-  // Hacher le mot de passe avec le sel
-  hashPassword(password: string, salt: string): string {
-    // On combine le mot de passe et le sel
-    // Formule : $Hash = \text{SHA256}(\text{password} + \text{salt})$
-    return CryptoJS.SHA256(password + salt).toString();
+  // Hash SHA-256 en Hexadécimal (compatible avec Java)
+  hash(text: string): string {
+    const hash = CryptoJS.SHA256(text);
+    return CryptoJS.enc.Hex.stringify(hash);
   }
 }

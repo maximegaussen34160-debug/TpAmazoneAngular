@@ -1,45 +1,80 @@
+<!-- Notification Toast -->
+@if (notification) {
+  <div class="toast" [class.success]="notification.type === 'success'" [class.error]="notification.type === 'error'">
+    @if (notification.type === 'success') {
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+      </svg>
+    } @else {
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="10"></circle>
+        <line x1="15" y1="9" x2="9" y2="15"></line>
+        <line x1="9" y1="9" x2="15" y2="15"></line>
+      </svg>
+    }
+    <span>{{ notification.message }}</span>
+  </div>
+}
+
 <div class="catalog-header">
   <h1>Consultez nos produits.</h1>
   <p class="subtitle">Le meilleur du magasin, directement chez vous.</p>
 </div>
 
-<div class="product-grid">
-  <div class="product-card">
-    <div class="product-image">
-      <img src="https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-card-40-17pro-202509_FMT_WHH?wid=508&hei=472&fmt=p-jpg&qlt=95&.v=WVVFRzUzVk1oblJhbW9PbGNSU25ja3doNjVzb1FWSTVwZWJJYThYTHlrNzQzbUlIR1RvazhDRHNOQlYvM3g2dFIwdkZSSnBZYjhOaHBpM2lkYTFBUEZHTmVoMWFVZloyU3lqdmZCOUFEeDF6K2N6UFd4K21VWHNnbWZBQ3hSanQ" alt="iPhone 15 Pro">
-    </div>
-    <div class="product-info">
-      <span class="apple-badge">Nouveau</span>
-      <h3>iPhone 15 Pro</h3>
-      <p class="stock">En stock : 12</p>
-      <p class="price">999 €</p>
-      <button class="add-to-cart-btn">Ajouter au panier</button>
-    </div>
+@if (isLoading) {
+  <div class="loading">
+    <div class="spinner"></div>
+    <p>Chargement des produits...</p>
   </div>
-
-  <div class="product-card">
-    <div class="product-image">
-      <img src="https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-card-40-17pro-202509_FMT_WHH?wid=508&hei=472&fmt=p-jpg&qlt=95&.v=WVVFRzUzVk1oblJhbW9PbGNSU25ja3doNjVzb1FWSTVwZWJJYThYTHlrNzQzbUlIR1RvazhDRHNOQlYvM3g2dFIwdkZSSnBZYjhOaHBpM2lkYTFBUEZHTmVoMWFVZloyU3lqdmZCOUFEeDF6K2N6UFd4K21VWHNnbWZBQ3hSanQ" alt="MacBook Air">
-    </div>
-    <div class="product-info">
-      <span class="apple-badge secondary">Stock limité</span>
-      <h3>MacBook Air</h3>
-      <p class="stock">En stock : 5</p>
-      <p class="price">1 299 €</p>
-      <button class="add-to-cart-btn">Ajouter au panier</button>
-    </div>
+} @else if (products.length === 0) {
+  <div class="empty-state">
+    <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+      <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <path d="M16 10a4 4 0 0 1-8 0"></path>
+    </svg>
+    <h2>Aucun produit disponible</h2>
+    <p>Ajoutez des produits pour les voir apparaître ici.</p>
+    <a routerLink="/add-product" class="btn-add">Ajouter un produit</a>
   </div>
-
-  <div class="product-card">
-    <div class="product-image">
-      <img src="https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-card-40-17pro-202509_FMT_WHH?wid=508&hei=472&fmt=p-jpg&qlt=95&.v=WVVFRzUzVk1oblJhbW9PbGNSU25ja3doNjVzb1FWSTVwZWJJYThYTHlrNzQzbUlIR1RvazhDRHNOQlYvM3g2dFIwdkZSSnBZYjhOaHBpM2lkYTFBUEZHTmVoMWFVZloyU3lqdmZCOUFEeDF6K2N6UFd4K21VWHNnbWZBQ3hSanQ" alt="AirPods Max">
-    </div>
-    <div class="product-info">
-      <span class="apple-badge">Populaire</span>
-      <h3>AirPods Max</h3>
-      <p class="stock">En stock : 8</p>
-      <p class="price">549 €</p>
-      <button class="add-to-cart-btn">Ajouter au panier</button>
-    </div>
+} @else {
+  <div class="product-grid">
+    @for (product of products; track product.id) {
+      <div class="product-card">
+        <div class="product-image">
+          @if (product.imageUrl) {
+            <img [src]="product.imageUrl" [alt]="product.name">
+          } @else {
+            <div class="placeholder-image">
+              <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                <polyline points="21 15 16 10 5 21"></polyline>
+              </svg>
+            </div>
+          }
+        </div>
+        <div class="product-info">
+          <span class="apple-badge" [class]="getBadgeClass(product)">
+            {{ getBadgeText(product) }}
+          </span>
+          <h3>{{ product.name }}</h3>
+          <p class="description">{{ product.description }}</p>
+          <p class="stock">Stock disponible : {{ getAvailableStock(product) }}</p>
+          <p class="price">{{ product.price.toFixed(2) }} €</p>
+          <button 
+            class="add-to-cart-btn" 
+            (click)="addToCart(product)"
+            [disabled]="getAvailableStock(product) === 0">
+            @if (getAvailableStock(product) === 0) {
+              Rupture de stock
+            } @else {
+              Ajouter au panier
+            }
+          </button>
+        </div>
+      </div>
+    }
   </div>
-</div>
+}

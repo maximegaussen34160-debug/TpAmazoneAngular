@@ -3,20 +3,30 @@
     <h1>Créez votre compte iShop.</h1>
     <p class="subtitle">Un compte unique pour tout acheter sur la plateforme.</p>
 
-    <form class="login-form">
+    <form class="login-form" (ngSubmit)="register()">
       <div class="input-group">
         <input type="text" [(ngModel)]="nameInput" placeholder="Nom complet"  name = "nameInput" required>
       </div>
 
       <div class="input-group">
-        <input type="text" [(ngModel)]="mailInput" placeholder="Adresse e-mail"  name = "mailInput" required>
+        <input type="email" [(ngModel)]="mailInput" placeholder="Adresse e-mail"  name = "mailInput" required>
       </div>
 
       <div class="input-group">
-        <input type="text" [(ngModel)]="passwordInput" placeholder="Mot de passe" name = "passwordInput"  required>
+        <input type="password" [(ngModel)]="passwordInput" placeholder="Mot de passe" name = "passwordInput"  required>
       </div>
 
-      <button (click)="register()">Créer mon compte</button>
+      @if (errorMessage) {
+        <div class="error-message">{{ errorMessage }}</div>
+      }
+
+      @if (successMessage) {
+        <div class="success-message">{{ successMessage }}</div>
+      }
+
+      <button type="submit" [disabled]="isLoading">
+        {{ isLoading ? 'Création...' : 'Créer mon compte' }}
+      </button>
     </form>
 
     <div class="login-footer">
